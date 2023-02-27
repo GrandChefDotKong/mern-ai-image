@@ -19,7 +19,31 @@ const CreatePost = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if(!form.prompt || !form.photo) {
+      alert('Generate an image to share first');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form }),
+      });
+
+      await response.json();
+      alert('Success');
+      navigate('/');
+
+    } catch (error) {
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
 
   }
 
